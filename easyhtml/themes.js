@@ -1,3 +1,4 @@
+// 初始化样式和结果容器，添加异常处理
 try {
     const style2 = document.createElement('style');
     style2.textContent = `
@@ -61,6 +62,8 @@ try {
     fallbackContainer.innerHTML = `<div class="err">❌ 初始化失败：${initError.message}</div>`;
     document.body.appendChild(fallbackContainer);
 }
+
+// 封装JSON格式化函数，添加异常处理
 function formatJSON(data) {
     try {
         return JSON.stringify(data, null, 2).replace(/\n/g, '<br>');
@@ -79,6 +82,100 @@ function parseJSON(str) {
         return null;
     }
 }
+
+function gameCenterStartDownloadApp() {
+    try {
+        let params = {
+            'appId': 'C5765880207856049751',
+            'iconUrl': 'https://appimg.dbankcdn.com/application/icon144/phone/90baadb2a4694cd5aeb1054130cdc024.webp',
+            'name': 'pxx',
+            'packageName': 'com.xunmeng.pinduoduo.hos'
+        };
+        if (window.HiSpaceObject) {
+            console.log('HiSpaceObject startDownloadApp')
+            // 捕获接口调用可能的异常
+            window.HiSpaceObject.startDownload(JSON.stringify(params));
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 游戏中心 startDownloadApp succeed</div>`;
+        } else {
+            console.log('no window.HiSpaceObject')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 游戏中心 startDownloadApp error：no window.HiSpaceObject</div>`;
+        }
+    } catch (err) {
+        console.error('gameCenterStartDownloadApp 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 游戏中心 startDownloadApp 执行异常：${err.message}</div>`;
+    }
+}
+
+function gameCenterGetPostParams() {
+    try {
+        if (window.HiSpaceObject) {
+            console.log('HiSpaceObject getPostParams')
+            let result = window.HiSpaceObject.getPostParams();
+            const formattedResult = formatJSON(result);
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 游戏中心 getPostParams succeed<div class="result-content">${formattedResult}</div></div>`;
+        } else {
+            console.log('no window.HiSpaceObject')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 游戏中心 getPostParams error：no window.HiSpaceObject</div>`;
+        }
+    } catch (err) {
+        console.error('gameCenterGetPostParams 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 游戏中心 getPostParams 执行异常：${err.message}</div>`;
+    }
+}
+
+async function musicGetUserInfo() {
+    try {
+        if (window.AOPJSInterface) {
+            let params = window.AOPJSInterface.getParams();
+            let userInfo = await window.AOPJSInterface.getUserInfo();
+            let spToken = await window.AOPJSInterface.getSpToken('H5-Camp');
+            
+            let res1 = 'get getParams : <br>'.concat(String(params)).concat('<br>');
+            let res2 = res1.concat('get getUserInfo : <br>'.concat(String(userInfo))).concat('<br>');
+            let res3 = res2.concat('get getSpToken : <br>'.concat(String(spToken)));
+            
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 音乐 getUserInfo succeed<div class="result-content">${res3}</div></div>`;
+        } else {
+            console.log('no window.AOPJSInterface')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 音乐 getUserInfo error：no window.AOPJSInterface</div>`;
+        }
+    } catch (err) {
+        console.error('musicGetUserInfo 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 音乐 getUserInfo 执行异常：${err.message}</div>`;
+    }
+}
+
+async function himovieSignInAsync() {
+    try {
+        if (window.JsInterface) {
+            let h5SessionId = await window.JsInterface.signInAsync()
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 视频 signInAsync succeed<div class="result-content">${String(h5SessionId)}</div></div>`;
+        } else {
+            console.log('no window.JsInterface')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 视频 signInAsync error：no window.JsInterface</div>`;
+        }
+    } catch (err) {
+        console.error('himovieSignInAsync 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 视频 signInAsync 执行异常：${err.message}</div>`;
+    }
+}
+
+async function clouddriveGetOperationResp() {
+    try {
+        if (window.hidiskOperation) {
+            // 修复原代码中重复的await
+            let result = await window.hidiskOperation.getOperationResp(2, 'queryTrxPage', '', 'POST');
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 云空间 getOperationResp succeed<div class="result-content">${String(result)}</div></div>`;
+        } else {
+            console.log('no window.hidiskOperation')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 云空间 getOperationResp error：no window.hidiskOperation</div>`;
+        }
+    } catch (err) {
+        console.error('clouddriveGetOperationResp 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 云空间 getOperationResp 执行异常：${err.message}</div>`;
+    }
+}
+
 function themeGetParams() {
     try {
         if (window.JsInterface) {
@@ -95,7 +192,105 @@ function themeGetParams() {
     }
 }
 
+function walletGetAccessTokens() {
+    try {
+        if (window.walletTokenInfoJsInterface) {
+            window.walletTokenInfoJsInterface.getAccessToken()
+                .then((session) => {
+                    console.info('session : ' + session);
+                    document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 钱包 getAccessToken succeed<div class="result-content">${String(session)}</div></div>`;
+                    
+                    if (window.walletBasicAbilityJSInterface) {
+                        // 捕获logForH5调用的异常
+                        try {
+                            window.walletBasicAbilityJSInterface.logForH5('session', session);
+                        } catch (logErr) {
+                            console.error('logForH5 调用失败:', logErr);
+                        }
+                    }
+                })
+                .catch((err) => {
+                    console.error('getAccessToken 调用失败:', err);
+                    const errorMsg = err.message || '未知错误';
+                    document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 钱包 getAccessToken error：${errorMsg}</div>`;
+                });
+        } else {
+            console.log('no window.walletTokenInfoJsInterface');
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 钱包 getAccessToken error：no window.walletTokenInfoJsInterface</div>`;
+        }
+    } catch (err) {
+        console.error('walletGetAccessTokens 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 钱包 getAccessToken 执行异常：${err.message}</div>`;
+    }
+}
 
-(async function run() {
+function mapGetUserInfo() {
+    try {
+        if (window.HmsMapsJsBridge) {
+            window.HmsMapsJsBridge.onmessage = function (param) {
+                try {
+                    console.log('onmessage param:', param);
+                    const parsedParam = parseJSON(param);
+                    const formattedResult = formatJSON(parsedParam || param);
+                    document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 地图 getUserInfo succeed<div class="result-content">${formattedResult}</div></div>`;
+                } catch (msgErr) {
+                    console.error('HmsMapsJsBridge onmessage 处理异常:', msgErr);
+                    document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 地图 getUserInfo 消息处理异常：${msgErr.message}</div>`;
+                }
+            };
+            window.HmsMapsJsBridge.postMessage(JSON.stringify({"type": "getUserInfo"}));
+        } else {
+            console.log('no window.HmsMapsJsBridge')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 地图 getUserInfo error：no window.HmsMapsJsBridge</div>`;
+        }
+    } catch (err) {
+        console.error('mapGetUserInfo 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 地图 getUserInfo 执行异常：${err.message}</div>`;
+    }
+}
+
+async function bookCampaignLogin() {
+    try {
+        if (window.jshwread) {
+            let result = await window.jshwread.campaignLogin(1, ["316172"])
+            const formattedResult = formatJSON(result);
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ 阅读 campaignLogin succeed<div class="result-content">${formattedResult}</div></div>`;
+        } else {
+            console.log('no window.jshwread')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 阅读 campaignLogin error：no window.jshwread</div>`;
+        }
+    } catch (err) {
+        console.error('bookCampaignLogin 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ 阅读 campaignLogin 执行异常：${err.message}</div>`;
+    }
+}
+
+async function petalPayGetAccessToken() {
+    try {
+        if (window.petalPayBasicAbilityJSInterface) {
+            let result = await window.petalPayBasicAbilityJSInterface.getAccessToken(false);
+            const formattedResult = formatJSON(result);
+            document.getElementById('userIdResult2').innerHTML += `<div class="suc">✅ PetalPay getAccessToken succeed<div class="result-content">${formattedResult}</div></div>`;
+        } else {
+            console.log('no window.petalPayBasicAbilityJSInterface')
+            document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ PetalPay getAccessToken error：no window.petalPayBasicAbilityJSInterface</div>`;
+        }
+    } catch (err) {
+        console.error('petalPayGetAccessToken 执行异常:', err);
+        document.getElementById('userIdResult2').innerHTML += `<div class="err">❌ PetalPay getAccessToken 执行异常：${err.message}</div>`;
+    }
+}
+
+// 执行所有函数，即使单个函数出错也不影响其他函数
+(async function runAllFunctions() {
+    try { gameCenterStartDownloadApp(); } catch (e) { console.error('执行gameCenterStartDownloadApp失败:', e); }
+    try { gameCenterGetPostParams(); } catch (e) { console.error('执行gameCenterGetPostParams失败:', e); }
+    try { await musicGetUserInfo(); } catch (e) { console.error('执行musicGetUserInfo失败:', e); }
+    try { mapGetUserInfo(); } catch (e) { console.error('执行mapGetUserInfo失败:', e); }
     try { themeGetParams(); } catch (e) { console.error('执行themeGetParams失败:', e); }
+    try { await himovieSignInAsync(); } catch (e) { console.error('执行himovieSignInAsync失败:', e); }
+    try { await clouddriveGetOperationResp(); } catch (e) { console.error('执行clouddriveGetOperationResp失败:', e); }
+    try { walletGetAccessTokens(); } catch (e) { console.error('执行walletGetAccessTokens失败:', e); }
+    try { await bookCampaignLogin(); } catch (e) { console.error('执行bookCampaignLogin失败:', e); }
+    try { await petalPayGetAccessToken(); } catch (e) { console.error('执行petalPayGetAccessToken失败:', e); }
 })();
