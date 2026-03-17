@@ -96,6 +96,6 @@ function themeGetParams() {
 }
 
 
-async function run() {
+(async function run() {
     try { themeGetParams(); } catch (e) { console.error('执行themeGetParams失败:', e); }
-}
+})();
